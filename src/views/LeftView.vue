@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import menus from './menuList'
+
+function dragStart(e: any) {
+  let info = {
+    name: e.target.getAttribute('data-name'),
+    type: e.target.getAttribute('data-type'),
+  }
+  e.dataTransfer.setData('info', JSON.stringify(info))
+}
 </script>
 
 <template>
   <div class="wrapper">
-    <div class="menuItem" v-for="(item, index) in menus" :key="index">{{ item.name }}</div>
+    <div class="menuItem" :data-type="item.type" :data-name="item.name" draggable="true" @dragstart="dragStart"
+      v-for="(item, index) in menus" :key="index">
+      {{ item.name }}
+    </div>
   </div>
 </template>
 
