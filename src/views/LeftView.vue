@@ -1,8 +1,10 @@
+<script setup lang="ts">
+import menus from './menuList'
+</script>
+
 <template>
   <div class="wrapper">
-    左侧
-    <!-- 测试： -->
-    <!-- <text-comp color="#39c5bb"></text-comp> -->
+    <div class="menuItem" v-for="(item, index) in menus" :key="index">{{ item.name }}</div>
   </div>
 </template>
 
