@@ -10,7 +10,9 @@ let obj: any = {
 
 // info的type就是组件的名称
 function getComponent(info: TextComp) {
-  return obj[info.type];
+  let component = obj[info.type]()
+  component.info = info
+  return component
 }
 
 export default getComponent;

@@ -1,18 +1,13 @@
 <script setup lang="ts">
-
-interface Text {
-  txt: String
-}
-
 const props = withDefaults(defineProps<{
   width: string | number,
   height: string | number,
   color: string,
   fontSize: string | number,
   // data可选
-  data?: Text,
+  data?: string,
 }>(), {
-  data: () => ({ txt: '这里是默认值' })
+  data: '这里是默认值'
 })
 
 function setStyle() {
@@ -28,9 +23,6 @@ function setStyle() {
 
 <template>
   <div class="wrapper" :style="setStyle()">
-    <span>{{ data.txt }}</span>
+    <span>{{ data }}</span>
   </div>
 </template>
-
-<style scoped>
-</style>

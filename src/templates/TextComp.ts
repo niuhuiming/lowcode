@@ -1,6 +1,6 @@
 import getAttrStr from '../utils'
 
-export default function () {
+function handle() {
   let attribute = [
     {
       key: 'width',
@@ -34,6 +34,8 @@ export default function () {
   let data = {
     txt: '默认值',
   }
-  let template = `<TextComp ${getAttrStr(attribute)} data=${data}></TextComp>`
+  let template = `<TextComp ${getAttrStr(attribute)} data=${JSON.stringify(data)}></TextComp>`
   return { attribute, data, template }
 }
+
+export default handle
