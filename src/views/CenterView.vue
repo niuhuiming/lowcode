@@ -1,9 +1,36 @@
 <script setup lang="ts">
 import { getId, mountedComponent } from '../utils'
+import { reactive, computed } from 'vue'
 import getComponent from '../templates'
-const components: any = []
-let zIndex = 0;
 
+const components: any = reactive([])
+const currComp: any = reactive({ isShow: false })
+let zIndex = 0
+
+const borderStyle = computed(() => {
+  let compWidth = 0;
+  let compHeight = 0;
+  if (currComp.isShow) {
+    currComp.isShow.attribute.forEach((item: any) => {
+      if (item.key === 'width') {
+        compWidth = item.value;
+      } else if (item.key === 'height') {
+        compHeight = item.value
+      }
+    })
+
+    let styleObj = {
+      width: `${compWidth}px`,
+      height: `${compHeight}px`,
+      left: `${currComp.isShow.position.left}px`,
+      top: `${currComp.isShow.position.top}px`,
+      zIndex: `${currComp.isShow.position.zIndex}`
+    }
+    return styleObj;
+  } else {
+    return {}
+  }
+})
 
 // 拖拽到画布的回调
 function dragOver(e: Event) {
@@ -33,14 +60,40 @@ function drop(e: any) {
   component.position = { left, top, zIndex }
   components.push(component)
   // 设置组件的挂载点
-  mountedComponent(component)  
+  mountedComponent(component)
+}
+// 通过事件冒泡找到被点击的元素
+function checkComp(e: Event) {
+  let reg = /a\w{8}-\w{4}/
+  let node: any = e.target
+  let count: number = 0
+  // 还有node并且node的id不是组件的id，就继续寻找
+  while (node && !reg.test(node.id)) {
+    if (count++ > 20) {
+      return
+    }
+    node = node.parentNode
+  }
+
+  // 获得匹配到的组件的id
+  if (node && node.id) {
+    currComp.isShow = components.find((item: any) => {
+      if (item.info.id === node.id) {
+        return item
+      }
+    })
+    console.log(currComp.isShow);
+    console.log('--', currComp.isShow.attribute[0].key);
+  } else {
+    currComp.isShow = false
+  }
 }
 </script>
 
 <template>
-  <div class="wrapper" @dragover="dragOver" @drop="drop">
+  <div id="canvasBox" class="wrapper" @dragover="dragOver" @drop="drop" @click="checkComp">
     <div v-for="(item, index) in components" :key="index" :id="item.info.id"></div>
-    <div id="xxx"></div>
+    <div class="borderStyle" v-if="currComp.isShow" :style="borderStyle"></div>
   </div>
 </template>
 
@@ -49,5 +102,10 @@ function drop(e: any) {
   flex: 1;
   background-color: #eee;
   position: relative;
+
+  .borderStyle {
+    border: 3px solid greenyellow;
+    position: absolute;
+  }
 }
 </style>

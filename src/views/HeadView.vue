@@ -34,7 +34,7 @@
 
       &.active {
         color: white;
-        background-color: #faafbe;
+        background-color: #00f;
       }
     }
   }
