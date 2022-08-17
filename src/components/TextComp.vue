@@ -1,21 +1,19 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   width: string | number,
   height: string | number,
   color: string,
   fontSize: string | number,
   // data可选
-  data?: string,
-}>(), {
-  data: '这里是默认值'
-})
+  data?: any,
+}>()
 
 function setStyle() {
   return {
     width: props.width + 'px',
     height: props.height + 'px',
     color: props.color,
-    fontSize: props.fontSize
+    fontSize: props.fontSize + 'px'
   }
 }
 </script>
@@ -23,6 +21,6 @@ function setStyle() {
 
 <template>
   <div class="wrapper" :style="setStyle()">
-    <span>{{ data }}</span>
+    <span>{{ JSON.parse(data).txt }}</span>
   </div>
 </template>

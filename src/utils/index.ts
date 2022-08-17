@@ -35,6 +35,7 @@ export function mountedComponent(component: any) {
       return h(TextComp, {
         ...data,
         id: component.info.id,
+        data: JSON.stringify(component.data),
         style: {
           position: 'absolute',
           top: `${component.position.top}px`,

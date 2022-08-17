@@ -1,6 +1,6 @@
 import getAttrStr from '../utils'
 
-function handle() {
+function handle(attr: any, dataStr: any) {
   let attribute = [
     {
       key: 'width',
@@ -31,8 +31,15 @@ function handle() {
       placeholder: '请输入字体大小'
     },
   ];
+  // 传入attr就是更新组件，没传就是第一次加载
+  if (attr) {
+    attribute = attr
+  }
   let data = {
     txt: '默认值',
+  }
+  if (dataStr) {
+    data.txt = dataStr
   }
   let template = `<TextComp ${getAttrStr(attribute)} data=${JSON.stringify(data)}></TextComp>`
   return { attribute, data, template }
