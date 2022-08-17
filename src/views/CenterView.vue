@@ -171,12 +171,21 @@ function mouseUp(e: any) {
   currComp.isShow.position.left = left
   currComp.isShow.position.top = top
 }
+
+// 删除组件的右击回调
+function rightClick() {
+  if (confirm('确定要删除这个组件吗')) {
+    document.getElementById(currComp.isShow.info.id)?.remove()
+  }
+  currComp.isShow = false
+}
 </script>
 
 <template>
   <div id="canvasBox" class="wrapper" @dragover="dragOver" @drop="drop" @click="checkComp">
     <div v-for="(item, index) in components" :key="index" :id="item.info.id"></div>
-    <div id="borderBox" @mousedown="mouseDownStart" class="borderStyle" v-if="currComp.isShow" :style="borderStyle">
+    <div id="borderBox" @contextmenu.prevent="rightClick" @mousedown="mouseDownStart" class="borderStyle"
+      v-if="currComp.isShow" :style="borderStyle">
     </div>
   </div>
 </template>
