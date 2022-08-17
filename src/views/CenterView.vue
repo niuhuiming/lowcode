@@ -67,6 +67,48 @@ function drop(e: any) {
   mountedComponent(component)
 }
 
+// 边界限定
+function boundaryLimit(type: string, num: number, comp: any) {
+  // 画布的宽高
+  let canvas: any = document.getElementById('canvasBox')
+  let canvasWidth = canvas.clientWidth
+  let canvasHeight = canvas.clientHeight
+  // 组件的宽高
+  let compWidth = 0
+  let compHeight = 0;
+  comp.attribute.forEach((item: any) => {
+    if (item.key === 'width') {
+      compWidth = item.value
+    }
+    if (item.key === 'height') {
+      compHeight = item.value
+    }
+  })
+  // 边界值
+  let maxX = canvasWidth - compWidth
+  let maxY = canvasHeight - compHeight
+
+  let lastNum = 0
+  if (type === 'x') {
+    if (num < 0) {
+      lastNum = 0
+    } else if (num > maxX) {
+      lastNum = maxX
+    } else {
+      lastNum = num
+    }
+  } else if (type === 'y') {
+    if (num < 0) {
+      lastNum = 0
+    } else if (num > maxY) {
+      lastNum = maxY
+    } else {
+      lastNum = num
+    }
+  }
+  return lastNum
+}
+
 // 通过事件冒泡找到被点击的元素
 function checkComp(e: Event) {
   let reg = /a\w{8}-\w{4}/
@@ -115,13 +157,17 @@ function mouseUp(e: any) {
   let offsetY = e.clientY - startPosition.y
   // 设置组件的位置
   let comp: any = document.getElementById(currComp.isShow.info.id)?.firstChild
-  Object.assign(comp.style, {
-    left: currComp.isShow.position.left + offsetX + 'px',
-    top: currComp.isShow.position.top + offsetY + 'px'
-  })
   
-  currComp.isShow.position.left += (e.clientX - startPosition.x)
-  currComp.isShow.position.top += (e.clientY - startPosition.y)
+  let left = boundaryLimit('x', currComp.isShow.position.left + offsetX, currComp.isShow)
+  let top = boundaryLimit('y', currComp.isShow.position.top + offsetY, currComp.isShow)
+
+  Object.assign(comp.style, {
+    left: left + 'px',
+    top: top + 'px'
+  })
+
+  currComp.isShow.position.left = left
+  currComp.isShow.position.top = top
 }
 </script>
 
