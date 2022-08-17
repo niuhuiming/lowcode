@@ -2,6 +2,7 @@
 import { getId, mountedComponent } from '../utils'
 import { reactive, computed } from 'vue'
 import getComponent from '../templates'
+import emitter from '../utils/emitter'
 
 const components: any = reactive([])
 const currComp: any = reactive({ isShow: false })
@@ -130,6 +131,7 @@ function checkComp(e: Event) {
       }
     })
     // console.log('√', currComp.isShow) 
+    emitter.emit('currComp', currComp.isShow)
   } else {
     // console.log('x', currComp.isShow) 
     currComp.isShow = false
@@ -157,7 +159,7 @@ function mouseUp(e: any) {
   let offsetY = e.clientY - startPosition.y
   // 设置组件的位置
   let comp: any = document.getElementById(currComp.isShow.info.id)?.firstChild
-  
+
   let left = boundaryLimit('x', currComp.isShow.position.left + offsetX, currComp.isShow)
   let top = boundaryLimit('y', currComp.isShow.position.top + offsetY, currComp.isShow)
 

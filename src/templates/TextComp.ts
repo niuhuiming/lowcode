@@ -19,7 +19,7 @@ function handle() {
     {
       key: 'color',
       name: '文本颜色',
-      value: '#f00',
+      value: '#ff0000',
       type: 'color',
       placeholder: '请选择颜色'
     },
