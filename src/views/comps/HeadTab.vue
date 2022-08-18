@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ref, reactive, defineEmits } from 'vue'
-const emit = defineEmits(["checkTabChange"])
+import { ref, reactive } from 'vue'
 
-let tabList: Array<string> = reactive(['样式', '数据'])
+const emit = defineEmits(["checkTabChange"])
 const props = defineProps({
   checkIndex: Number
 })
+
+let tabList: Array<string> = reactive(['样式', '数据'])
 let checkIndex = ref(props.checkIndex)
 
 function checkTab(index: number) {
   checkIndex.value = index;
   emit("checkTabChange", checkIndex.value)
 }
-
 </script>
 
 <template>
@@ -33,7 +33,7 @@ function checkTab(index: number) {
 
   .tabItem {
     padding: 15px;
-    // 鼠标放上去是小手
+    // 改变鼠标放上去的样式
     cursor: pointer;
   }
 

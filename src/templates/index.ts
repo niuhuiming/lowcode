@@ -1,15 +1,13 @@
 import TextComp from './TextComp'
-
-interface TextComp {
-  type: 'info'
-}
+import PicComp from './PicComp'
 
 let obj: any = {
-  TextComp
+  TextComp,
+  PicComp
 }
 
 // info的type就是组件的名称
-function getComponent(info: TextComp, attr?: any, data = '默认文本') {
+function getComponent(info: any, attr?: Array<any>, data?: any) {
   let component = obj[info.type](attr, data)
   component.info = info
   return component

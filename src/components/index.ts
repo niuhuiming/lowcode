@@ -1,17 +1,11 @@
 import TextComp from './TextComp.vue'
+import PicComp from './PicComp.vue'
 
-let obj: any = {
-  TextComp
+let Comps: any = {
+  TextComp,
+  PicComp
 }
 
-/**
- * install(): 挂载全局组件。app.use()时调用
- */
-function install(Vue: any) {
-  Object.keys(obj).forEach(key => Vue.component(key, obj[key]))
-}
-
-export default {
-  version: '1.0',
-  install
+export {
+  Comps
 }

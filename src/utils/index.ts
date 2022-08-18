@@ -2,7 +2,7 @@
  * 工具类
  */
 import { createApp, h } from 'vue'
-import TextComp from '../components/TextComp.vue'
+import { Comps } from '../components'
 
 function getAttrStr(attrs: Array<any>) {
   let attrStr = ''
@@ -22,6 +22,7 @@ export function getId() {
   // 0x10000：以0x开始的数据表示16进制，10000转成十进制数就是65536，实际上这是为了后面获取四位数随机号码所以乘以10000，而为了获取包含字母在内的字符就用16进制。
 }
 
+// 挂载组件
 export function mountedComponent(component: any) {
   let data: any = {}
   if (component.attribute) {
@@ -30,11 +31,12 @@ export function mountedComponent(component: any) {
     })
   }
 
+  // createApp(): 创建一个应用实例。第一个参数是根组件，第二个参数（可选）是要传递给根组件的props
   const app = createApp({
     render() {
-      return h(TextComp, {
+      // h(): 创建虚拟dom节点
+      return h(Comps[component.info.type], {
         ...data,
-        id: component.info.id,
         data: JSON.stringify(component.data),
         style: {
           position: 'absolute',
@@ -45,7 +47,7 @@ export function mountedComponent(component: any) {
       })
     },
   })
-  // 放入定时器中，否则不生效
+  // 放入定时器中，否则不会挂载
   setTimeout(() => {
     app.mount(`#${component.info.id}`)
   })

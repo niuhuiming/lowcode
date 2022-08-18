@@ -1,6 +1,5 @@
-import getAttrStr from '../utils'
-
-function handle(attr: any, dataStr: any) {
+// 不传配置加载默认组件，传入配置为更新组件
+function handle(attr: Array<any>, dataStr: any) {
   let attribute = [
     {
       key: 'width',
@@ -30,19 +29,15 @@ function handle(attr: any, dataStr: any) {
       type: 'input',
       placeholder: '请输入字体大小'
     },
-  ];
-  // 传入attr就是更新组件，没传就是第一次加载
+  ]
   if (attr) {
     attribute = attr
   }
-  let data = {
-    txt: '默认值',
-  }
+  let data = { txt: '默认值' }
   if (dataStr) {
-    data.txt = dataStr
+    data = JSON.parse(dataStr)
   }
-  let template = `<TextComp ${getAttrStr(attribute)} data=${JSON.stringify(data)}></TextComp>`
-  return { attribute, data, template }
+  return { attribute, data }
 }
 
 export default handle

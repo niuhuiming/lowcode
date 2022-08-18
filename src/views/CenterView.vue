@@ -1,56 +1,72 @@
 <script setup lang="ts">
-import { getId, mountedComponent } from '../utils'
-import { reactive, computed } from 'vue'
+import { reactive, computed, StyleValue } from 'vue'
 import getComponent from '../templates'
+import { getId, mountedComponent } from '../utils'
 import emitter from '../utils/emitter'
 
-const components: any = reactive([])
-const currComp: any = reactive({ isShow: false })
-let zIndex: number = 0
+type Position = {
+  x: number,
+  y: number
+}
+type Comp = {
+  attribute: Array<any>,
+  data: any,
+  info: {
+    id?: string,
+    name: string,
+    type: string
+  },
+  position: {
+    left: number,
+    top: number,
+    zIndex: number
+  }
+}
 
-let startPosition = { x: 0, y: 0 }
+const components: Array<Comp> = reactive([])
+const currComp: any = reactive({ isShow: false })
+// 组件的位置信息
+let zIndex: number = 0
+const startPosition: Position = { x: 0, y: 0 }
 
 // 计算属性，显示被点击组件的边框
-const borderStyle = computed(() => {
-  let compWidth: number = 0
-  let compHeight: number = 0
-  if (currComp.isShow) {
-    currComp.isShow.attribute.forEach((item: any) => {
-      if (item.key === 'width') {
-        compWidth = item.value
-      } else if (item.key === 'height') {
-        compHeight = item.value
-      }
-    })
-
-    let styleObj = {
-      width: `${compWidth}px`,
-      height: `${compHeight}px`,
-      left: `${currComp.isShow.position.left}px`,
-      top: `${currComp.isShow.position.top}px`,
-      zIndex: `${currComp.isShow.position.zIndex}`
+const borderStyle = computed(function () {
+  // 组件的宽和高，即为边框的宽和高
+  let compWidth: number = 0, compHeight: number = 0
+  currComp.isShow.attribute.forEach((item: any) => {
+    if (item.key === 'width') {
+      compWidth = item.value
+    } else if (item.key === 'height') {
+      compHeight = item.value
     }
-    return styleObj
-  } else {
-    return {}
-  }
+  })
+
+  return {
+    width: `${compWidth}px`,
+    height: `${compHeight}px`,
+    left: `${currComp.isShow.position.left}px`,
+    top: `${currComp.isShow.position.top}px`,
+    zIndex: `${currComp.isShow.position.zIndex}`
+  } as StyleValue
 })
 
 // 拖拽到画布的回调
-function dragOver(e: Event) {
+function dragOver(e: DragEvent) {
   e.preventDefault()
 }
 
-// 鼠标松开的回调
-function drop(e: any) {
+// 拖拽到画布鼠标松开的回调
+function drop(e: DragEvent) {
   e.preventDefault()
-  let info = JSON.parse(e.dataTransfer.getData('info'))
-  info.id = getId()
-  // 得到组件的属性、数据和模板
-  let component = getComponent(info)
+
+  const info: object = {
+    ...JSON.parse((e.dataTransfer)!.getData('info')),
+    id: getId()
+  }
+  // 得到组件的属性、数据
+  const component = getComponent(info)  // attribute, data, info, position
   // 找到组件的宽高
-  let compWidth = 0
-  let compHeight = 0
+  let compWidth: number = 0, compHeight: number = 0
   component.attribute.forEach((item: any) => {
     if (item.key === 'width') {
       compWidth = item.value
@@ -59,24 +75,50 @@ function drop(e: any) {
     }
   })
   // 设置组件的位置，将拖拽的组件放入数组中
-  let left = Math.max(e.offsetX - compWidth / 2, 0)
-  let top = Math.max(e.offsetY - compHeight / 2, 0)
+  const left: number = Math.max(e.offsetX - compWidth / 2, 0)
+  const top: number = Math.max(e.offsetY - compHeight / 2, 0)
   zIndex++
   component.position = { left, top, zIndex }
   components.push(component)
-  // 设置组件的挂载点
+  // 挂载组件
   mountedComponent(component)
 }
 
+// 通过事件冒泡找到被点击的元素
+function checkComp(e: Event) {
+  let node: HTMLElement = e.target as HTMLElement
+  const reg: RegExp = /a\w{8}-\w{4}/
+  let count: number = 20 // 最大寻找次数，防止死循环
+
+  while (node && !reg.test(node.id)) {
+    if (count-- < 0) {
+      return
+    }
+    node = node.parentNode as HTMLElement
+  }
+
+  if (node && node.id) {
+    // 得到被点击的组件后将其信息保存下来
+    currComp.isShow = components.find((item: any) => {
+      if (item.info.id === node.id) {
+        return item
+      }
+    })
+    // 提交给右侧工具栏显示信息
+    emitter.emit('currComp', currComp.isShow) // attribute, data, info, position
+  } else {
+    // 未得到组件，isShow置为false
+    currComp.isShow = false
+  }
+}
+
 // 边界限定
-function boundaryLimit(type: string, num: number, comp: any) {
+function boundaryLimit(type: 'x' | 'y', num: number, comp: any) {
   // 画布的宽高
-  let canvas: any = document.getElementById('canvasBox')
-  let canvasWidth = canvas.clientWidth
-  let canvasHeight = canvas.clientHeight
+  const canvas: HTMLElement = document.getElementById('canvasBox')!
+  const canvasWidth = canvas.clientWidth, canvasHeight = canvas.clientHeight
   // 组件的宽高
-  let compWidth = 0
-  let compHeight = 0;
+  let compWidth = 0, compHeight = 0
   comp.attribute.forEach((item: any) => {
     if (item.key === 'width') {
       compWidth = item.value
@@ -86,60 +128,18 @@ function boundaryLimit(type: string, num: number, comp: any) {
     }
   })
   // 边界值
-  let maxX = canvasWidth - compWidth
-  let maxY = canvasHeight - compHeight
+  const maxX = canvasWidth - compWidth, maxY = canvasHeight - compHeight
 
-  let lastNum = 0
   if (type === 'x') {
-    if (num < 0) {
-      lastNum = 0
-    } else if (num > maxX) {
-      lastNum = maxX
-    } else {
-      lastNum = num
-    }
+    num = Math.min(Math.max(0, num), maxX)
   } else if (type === 'y') {
-    if (num < 0) {
-      lastNum = 0
-    } else if (num > maxY) {
-      lastNum = maxY
-    } else {
-      lastNum = num
-    }
+    num = Math.min(Math.max(0, num), maxY)
   }
-  return lastNum
+  return num
 }
 
-// 通过事件冒泡找到被点击的元素
-function checkComp(e: Event) {
-  let reg = /a\w{8}-\w{4}/
-  let node: any = e.target
-  let count: number = 0
-  // 还有node并且node的id不是组件的id，就继续寻找
-  while (node && !reg.test(node.id)) {
-    if (count++ > 20) {
-      return
-    }
-    node = node.parentNode
-  }
-
-  // 获得匹配到的组件的id
-  if (node && node.id) {
-    currComp.isShow = components.find((item: any) => {
-      if (item.info.id === node.id) {
-        return item
-      }
-    })
-    // console.log('√', currComp.isShow) 
-    emitter.emit('currComp', currComp.isShow)
-  } else {
-    // console.log('x', currComp.isShow) 
-    currComp.isShow = false
-  }
-}
-
-// 鼠标按下时的回调
-function mouseDownStart(e: any) {
+// 移动组件鼠标按下时的回调
+function mouseDownStart(e: MouseEvent) {
   // 记录鼠标按下瞬间的位置
   startPosition.x = e.clientX
   startPosition.y = e.clientY
@@ -147,27 +147,23 @@ function mouseDownStart(e: any) {
   document.addEventListener('mouseup', mouseUp)
 }
 
-// 鼠标松开的回调
-function mouseUp(e: any) {
-  // 移除事件
+// 移动组件，鼠标松开的回调
+function mouseUp(e: MouseEvent) {
+  // 移除鼠标松开事件
   document.removeEventListener('mouseup', mouseUp)
-  // 更新组件数据
-  // console.log('currComp', currComp.isShow);
 
   // 相对移动长度
-  let offsetX = e.clientX - startPosition.x
-  let offsetY = e.clientY - startPosition.y
-  // 设置组件的位置
-  let comp: any = document.getElementById(currComp.isShow.info.id)?.firstChild
-
+  const offsetX: number = e.clientX - startPosition.x
+  const offsetY: number = e.clientY - startPosition.y
+  // 计算组件的最终的位置
   let left = boundaryLimit('x', currComp.isShow.position.left + offsetX, currComp.isShow)
   let top = boundaryLimit('y', currComp.isShow.position.top + offsetY, currComp.isShow)
 
+  let comp: any = (document.getElementById(currComp.isShow.info.id)!.firstChild)!
   Object.assign(comp.style, {
     left: left + 'px',
     top: top + 'px'
   })
-
   currComp.isShow.position.left = left
   currComp.isShow.position.top = top
 }
@@ -184,8 +180,8 @@ function rightClick() {
 <template>
   <div id="canvasBox" class="wrapper" @dragover="dragOver" @drop="drop" @click="checkComp">
     <div v-for="(item, index) in components" :key="index" :id="item.info.id"></div>
-    <div id="borderBox" @contextmenu.prevent="rightClick" @mousedown="mouseDownStart" class="borderStyle"
-      v-if="currComp.isShow" :style="borderStyle">
+    <div id="borderBox" class="borderStyle" v-if="currComp.isShow" :style="borderStyle"
+      @contextmenu.prevent="rightClick" @mousedown="mouseDownStart">
     </div>
   </div>
 </template>
