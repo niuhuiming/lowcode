@@ -1,5 +1,5 @@
 // 不传配置加载默认组件，传入配置为更新组件
-function handle(attr: Array<any>, dataStr: any) {
+function handle(attr: Array<any>, dataStr: string) {
   let attribute = [
     {
       key: 'width',

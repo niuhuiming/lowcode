@@ -4,8 +4,7 @@ const props = defineProps<{
   height: string | number,
   color: string,
   fontSize: string | number,
-  // data可选
-  data?: any,
+  data: string,
 }>()
 
 function setStyle() {

@@ -7,10 +7,13 @@ import HeadTab from './comps/HeadTab.vue'
 
 let checkIndex = ref(0)
 const currComp: any = reactive({ isShow: false })
+// 对data对象特殊处理，防止[object  Object]的问题
+let dataStr = ref('')
 
 // 接收被点击组件的信息
 emitter.on('currComp', (e) => {
   currComp.isShow = e
+  dataStr.value = JSON.stringify(currComp.isShow.data)
 })
 
 // 切换tab
@@ -21,7 +24,7 @@ function checkTabChange(index: number) {
 // 组件样式的响应
 function updateComp() {
   // 1.获取组件数据
-  let component = getComponent(currComp.isShow.info, currComp.isShow.attribute, currComp.isShow.data)
+  let component = getComponent(currComp.isShow.info, currComp.isShow.attribute, dataStr.value)
   // 2.设置组件的位置
   component.position = currComp.isShow.position
   // 3.重新挂载组件
@@ -44,7 +47,7 @@ function updateComp() {
       </div>
       <!-- 数据 -->
       <div v-if="checkIndex === 1">
-        <textarea class="dataBox" v-model="currComp.isShow.data" @change="updateComp"></textarea>
+        <textarea class="dataBox" v-model="dataStr" @change="updateComp"></textarea>
       </div>
     </div>
     <div v-else style="padding: 15px;">当前没有正在编辑的组件</div>

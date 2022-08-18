@@ -2,7 +2,7 @@
 const props = defineProps<{
   width: string | number,
   height: string | number,
-  data?: any,
+  data: string,
 }>()
 
 function setStyle() {

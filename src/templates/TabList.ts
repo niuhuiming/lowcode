@@ -1,4 +1,4 @@
-function handle(attr: Array<any>, dataStr: any) {
+function handle(attr: Array<any>, dataStr: string) {
   let attribute = [
     {
       key: 'width',

@@ -5,7 +5,7 @@ const props = defineProps<{
   width: string | number,
   height: string | number,
   itemWidth: string | number,
-  data?: any,
+  data: string,
 }>()
 
 let dataList = reactive(JSON.parse(props.data).list)
