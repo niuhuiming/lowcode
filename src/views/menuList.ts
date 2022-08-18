@@ -13,8 +13,8 @@ const menus: Array<Comp> = [
     name: '图片组件'
   },
   {
-    type: 'TextComp',
-    name: '文本组件'
+    type: 'TabList',
+    name: '菜单组件'
   },
   {
     type: 'TextComp',

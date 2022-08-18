@@ -1,9 +1,11 @@
 import TextComp from './TextComp'
 import PicComp from './PicComp'
+import TabList from './TabList'
 
 let obj: any = {
   TextComp,
-  PicComp
+  PicComp,
+  TabList
 }
 
 // info的type就是组件的名称
