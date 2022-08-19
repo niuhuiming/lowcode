@@ -17,12 +17,12 @@ const menus: Array<Comp> = [
     name: '菜单组件'
   },
   {
-    type: 'TextComp',
-    name: '文本组件'
+    type: 'VideoComp',
+    name: '视频组件'
   },
   {
-    type: 'TextComp',
-    name: '文本组件'
+    type: 'LinkComp',
+    name: '链接组件'
   },
 ]
 

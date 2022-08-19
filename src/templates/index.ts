@@ -1,11 +1,15 @@
 import TextComp from './TextComp'
 import PicComp from './PicComp'
 import TabList from './TabList'
+import VideoComp from './VideoComp'
+import LinkComp from './LinkComp'
 
 let obj: any = {
   TextComp,
   PicComp,
-  TabList
+  TabList,
+  VideoComp,
+  LinkComp
 }
 
 // info的type就是组件的名称
