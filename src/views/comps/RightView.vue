@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import getComponent from '../templates'
-import { mountedComponent } from '../utils'
-import emitter from "../utils/emitter"
-import HeadTab from './comps/HeadTab.vue'
+import getComponent from '../../templates'
+import { mountedComponent } from '../../utils'
+import emitter from "../../utils/emitter"
+import HeadTab from './HeadTab.vue'
 
 let checkIndex = ref(0)
 const currComp: any = reactive({ isShow: false })

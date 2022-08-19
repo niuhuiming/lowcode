@@ -1,10 +1,28 @@
+<script setup lang="ts">
+import emitter from '../../utils/emitter'
+
+// 缓存组件
+function save() {
+  emitter.emit('compSave')
+}
+
+// 发布组件
+function submit() {
+  if (confirm('确定要发布吗')) {
+    emitter.emit('compSubmit')
+  }
+}
+</script>
+
 <template>
   <div class="wrapper">
     <h3>头部标题</h3>
     <div class="btn-box">
-      <div class="btn active">预览</div>
-      <div class="btn">保存</div>
-      <div class="btn">发布</div>
+      <div class="btn" @click="save">保存</div>
+      <div class="btn" @click="submit">发布</div>
+      <div class="btn active">
+        <router-link to="/list">查看</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -23,6 +41,10 @@
     display: flex;
     width: 200px;
     justify-content: space-around;
+
+    a {
+      text-decoration: none;
+    }
 
     .btn {
       background-color: white;
