@@ -4,5 +4,5 @@ type Events = {
   currComp: Object
 }
 
-const emitter = mitt<Events>()
+const emitter = mitt<any>()
 export default emitter
