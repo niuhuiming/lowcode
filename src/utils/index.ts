@@ -3,14 +3,7 @@
  */
 import { createApp, h } from 'vue'
 import { Comps } from '../components'
-
-function getAttrStr(attrs: Array<any>) {
-  let attrStr = ''
-  attrs.forEach(item => {
-    attrStr += item.key + '=' + item.value + ' '
-  })
-  return attrStr
-}
+import axios from 'axios'
 
 // 获取随机ID
 export function getId() {
@@ -53,4 +46,24 @@ export function mountedComponent(component: any) {
   })
 }
 
-export default getAttrStr
+// 发布页面
+export function publishPage(data: any) {
+  axios({
+    url: 'http://127.0.0.1:3000/api/publish',
+    method: 'post',
+    data,
+  }).then((value) => {
+    if (!value.data.status) {
+      alert('发生了错误，请于控制台查看')
+      console.log('Error', value.data.msg)
+    }
+  })
+};
+
+// 获取页面列表
+export function getPageList() {
+  return axios({
+    url: 'http://127.0.0.1:3000/api/getList',
+    method: 'get',
+  })
+}

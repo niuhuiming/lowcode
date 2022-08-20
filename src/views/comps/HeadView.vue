@@ -1,26 +1,27 @@
 <script setup lang="ts">
 import emitter from '../../utils/emitter'
 
-// 缓存组件
+// 暂存组件
 function save() {
-  emitter.emit('compSave')
+  emitter.emit('pageSave')
 }
 
 // 发布组件
 function submit() {
-  if (confirm('确定要发布吗')) {
-    emitter.emit('compSubmit')
+  const pageRemark = prompt('该页面的名称为')
+  if (pageRemark) {
+    emitter.emit('pagePublish', pageRemark)
   }
 }
 </script>
 
 <template>
   <div class="wrapper">
-    <h3>头部标题</h3>
+    <h2>编辑页面</h2>
     <div class="btn-box">
-      <div class="btn" @click="save">保存</div>
+      <div class="btn" @click="save">暂存</div>
       <div class="btn" @click="submit">发布</div>
-      <div class="btn active">
+      <div class="btn">
         <router-link to="/list">查看</router-link>
       </div>
     </div>
@@ -29,7 +30,7 @@ function submit() {
 
 <style scoped lang="less">
 .wrapper {
-  background-color: #39c5bb;
+  background-color: #555;
   height: 80px;
   display: flex;
   justify-content: space-between;

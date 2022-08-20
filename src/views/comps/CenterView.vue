@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, computed, StyleValue, onMounted } from 'vue'
 import getComponent from '../../templates'
-import { getId, mountedComponent } from '../../utils'
+import { getId, mountedComponent, publishPage } from '../../utils'
 import emitter from '../../utils/emitter'
 
 type Position = {
@@ -29,28 +29,31 @@ const currComp: any = reactive({ isShow: false })
 let zIndex: number = 0
 const startPosition: Position = { x: 0, y: 0 }
 
-// 保存组件信息
-emitter.on('compSave', () => {
-  localStorage.setItem('comps', JSON.stringify(components))
-})
-
-// 提交组件信息
-emitter.on('compSubmit', () => {
-  console.log('compSubmit', JSON.stringify(components))
-  // TODO:发布组件
-  // submitComp()
-})
-
-// 生命周期：挂载前查看之前是否保存
+// 生命周期：挂载前查看之前是否暂存
 onMounted(() => {
   const dataStr = localStorage.getItem('comps')
   if (dataStr) {
-    const data = JSON.parse(dataStr);
+    const data = JSON.parse(dataStr)
     data.forEach((component: any) => {
       components.push(component)
       mountedComponent(component)
     })
   }
+})
+
+// 暂存页面
+emitter.on('pageSave', () => {
+  localStorage.setItem('comps', JSON.stringify(components))
+})
+
+// 发布页面
+emitter.on('pagePublish', (pageRemark) => {
+  const data = {
+    pageRemark,
+    pageStruct: components,
+    pageGenerateTime: Date.now()
+  }
+  publishPage(data)
 })
 
 // 计算属性，显示被点击组件的边框
@@ -196,8 +199,9 @@ function mouseUp(e: MouseEvent) {
 function rightClick() {
   if (confirm('确定要删除这个组件吗')) {
     document.getElementById(currComp.isShow.info.id)?.remove()
+    components.splice(components.findIndex(item => item.info.id === currComp.isShow.info.id), 1)
+    currComp.isShow = false
   }
-  currComp.isShow = false
 }
 </script>
 
