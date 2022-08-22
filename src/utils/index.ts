@@ -49,12 +49,12 @@ export function mountedComponent(component: any) {
 // 发布页面
 export function publishPage(data: any) {
   axios({
-    url: 'http://127.0.0.1:3000/api/publish',
+    url: 'http://43.140.248.221:3000/api/publish',
     method: 'post',
     data,
   }).then((value) => {
     if (!value.data.status) {
-      alert('发生了错误，请于控制台查看')
+      alert('发生了错误')
       console.log('Error', value.data.msg)
     }
   })
@@ -63,7 +63,7 @@ export function publishPage(data: any) {
 // 获取页面列表
 export function getPageList() {
   return axios({
-    url: 'http://127.0.0.1:3000/api/getList',
+    url: 'http://43.140.248.221:3000/api/getList',
     method: 'get',
   })
 }

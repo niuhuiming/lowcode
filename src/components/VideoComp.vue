@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+import videoSource from '../assets/demo.mp4'
+
 const props = defineProps<{
   width: string | number,
   height: string | number,
@@ -13,7 +16,6 @@ function setStyle() {
 }
 </script>
 
-
 <template>
-  <video class="wrapper" :style="setStyle()" :src="`../src/assets/${JSON.parse(data).filename}`"></video>
+  <video class="wrapper" :style="setStyle()" :src="videoSource"></video>
 </template>

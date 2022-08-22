@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+import picSource from '../assets/logo.png'
+
 const props = defineProps<{
   width: string | number,
   height: string | number,
@@ -14,5 +17,5 @@ function setStyle() {
 </script>
 
 <template>
-  <img class="wrapper" :style="setStyle()" :src="`../src/assets/${JSON.parse(data).filename}`">
+  <img class="wrapper" :style="setStyle()" :src="picSource">
 </template>
